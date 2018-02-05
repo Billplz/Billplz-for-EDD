@@ -26,7 +26,7 @@ Normal WordPress Installation:
 ## Configuration
 
 1. **Downloads** >> **Settings** >> **Payment Gateways**
-2. **Tick Billplz** and Set **API Key**, **X Signature Key**, **Bill Description** & Collection ID
+2. **Tick Billplz** and Set **API Key**, **X Signature Key** & Collection ID
 3. Save Changes
 
 Note: Make sure your Currency is set to **Malaysian Ringgits** otherwise it will not work.
