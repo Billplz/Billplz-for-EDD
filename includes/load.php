@@ -165,10 +165,10 @@ function edd_listen_for_billplz_ipn()
 
     try {
         if (isset($_GET['billplz']['id'])) {
-            $data = Billplz_API::getRedirectData($x_signature);
+            $data = Billplz::getRedirectData($x_signature);
         } else {
             edd_debug_log('Billplz IPN endpoint loaded');
-            $data = Billplz_API::getCallbackData($x_signature);
+            $data = Billplz::getCallbackData($x_signature);
         }
     } catch (\Exception $e) {
         edd_record_gateway_error(__('IPN Error', 'easy-digital-downloads'), sprintf(__('Invalid IPN verification response. IPN data: %s', 'easy-digital-downloads'), $e->getMessage()));
@@ -177,7 +177,7 @@ function edd_listen_for_billplz_ipn()
     }
 
     edd_debug_log('IPN verified successfully');
-    $billplz = new Billplz_API($api_key);
+    $billplz = new Billplz($api_key);
     $moreData = $billplz->check_bill($data['id']);
 
     $payment_id = absint($moreData['reference_1']);
