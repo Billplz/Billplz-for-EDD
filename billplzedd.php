@@ -2,10 +2,10 @@
 
 /**
  * Plugin Name: Billplz for EDD
- * Plugin URI: http://github.com/billplzplugin/Billplz-for-EDD
+ * Plugin URI: http://github.com/billplz/Billplz-for-EDD
  * Description: Billplz Payment Gateway | Accept Payment using all participating FPX Banking Channels. <a href="https://www.billplz.com/join/8ant7x743awpuaqcxtqufg" target="_blank">Sign up Now</a>.
  * Author: Wan @ Billplz
- * Author URI: http://www.github.com/billplzplugin
+ * Author URI: http://www.github.com/billplz
  * Version: 3.00
  * License: GPL-3.0-or-later
  * Requires PHP: 5.6
