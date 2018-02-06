@@ -1,8 +1,8 @@
 # Billplz for Easy Digital Downloads (EDD)
-[![Latest Stable Version](https://poser.pugx.org/billplzplugin/billplz-for-edd/version)](https://packagist.org/packages/billplzplugin/billplz-for-edd)
-[![Total Downloads](https://poser.pugx.org/billplzplugin/billplz-for-edd/downloads)](https://packagist.org/packages/billplzplugin/billplz-for-edd)
-[![Latest Unstable Version](https://poser.pugx.org/billplzplugin/billplz-for-edd/v/unstable)](//packagist.org/packages/billplzplugin/billplz-for-edd)
-[![License](https://poser.pugx.org/billplzplugin/billplz-for-edd/license)](https://packagist.org/packages/billplzplugin/billplz-for-edd)
+[![Latest Stable Version](https://poser.pugx.org/billplz/billplz-for-edd/version)](https://packagist.org/packages/billplz/billplz-for-edd)
+[![Total Downloads](https://poser.pugx.org/billplz/billplz-for-edd/downloads)](https://packagist.org/packages/billplz/billplz-for-edd)
+[![Latest Unstable Version](https://poser.pugx.org/billplz/billplz-for-edd/v/unstable)](//packagist.org/packages/billplz/billplz-for-edd)
+[![License](https://poser.pugx.org/billplz/billplz-for-edd/license)](https://packagist.org/packages/billplz/billplz-for-edd)
 
 Accept Payment using Billplz by using this plugin
 
