@@ -14,12 +14,12 @@ Accept Payment using Billplz by using this plugin
 
 For **Composer** Installation:
 ```bash
-composer require billplzplugin/billplz-for-edd 
+composer require billplz/billplz-for-edd 
 ```
 
 Normal WordPress Installation:
 
-* Download here: [**Link**](https://github.com/billplzplugin/Billplz-for-EDD/archive/master.zip)
+* Download here: [**Link**](https://github.com/billplz/Billplz-for-EDD/archive/master.zip)
 * Install to WordPress and **Activate**.
 * Let's Configure!
 
