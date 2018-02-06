@@ -12,11 +12,11 @@ if (!class_exists('Billplz')) {
         private $api_key_status = false;
 
         /*
-         * API Key & X Signature Key may changed anytime
-         * Provided if API Key and X Signature not provided
+         * Please don't set your API Key & Signature Key here.
+         * Set on Downloads >> Settings >> Payment Gateway
          */
-        public static $api_key = '4e49de80-1670-4606-84f8-2f1d33a38670';
-        public static $x_signature = 'S-0Sq67GFD9Y5iXmi5iXMKsA';
+        public static $api_key = '';
+        public static $x_signature = '';
 
         public function __construct($api_key = '')
         {
@@ -562,76 +562,91 @@ if (!class_exists('Billplz')) {
         }
     }
 }
-    if (!class_exists('BillplzAction')) {
-        class BillplzAction
+if (!class_exists('BillplzAction')) {
+    class BillplzAction
+    {
+        public $url;
+        public $action;
+        public $curldata;
+        public $api_key;
+        public static $production = 'https://www.billplz.com/api/v3/';
+        public static $staging = 'https://billplz-staging.herokuapp.com/api/v3/';
+
+        public function setAPI($api_key)
         {
-            public $url;
-            public $action;
-            public $curldata;
-            public $api_key;
-            public static $production = 'https://www.billplz.com/api/v3/';
-            public static $staging = 'https://billplz-staging.herokuapp.com/api/v3/';
+            $this->api_key = $api_key;
+            return $this;
+        }
 
-            public function setAPI($api_key)
-            {
-                $this->api_key = $api_key;
-                return $this;
+        public function setAction($action)
+        {
+            $this->action = $action;
+            return $this;
+        }
+
+        public function setURL($mode, $id = '')
+        {
+            if ($mode == 'Staging') {
+                $this->url = self::$staging;
+            } elseif ($mode == 'Production') {
+                $this->url = self::$production;
+            } else {
+                self::throwException('Invalid API Key Provided');
+            }
+            if ($this->action == 'DELETE' || $this->action == 'CHECK') {
+                $this->url .= 'bills/' . $id;
+            } elseif ($this->action == 'CREATE') {
+                $this->url .= 'bills/';
+            } elseif ($this->action == 'GETCOLLECTIONINDEX') {
+                $this->url .= 'collections';
+            } elseif ($this->action == 'GETTRANSACTIONINDEX') {
+                $this->url .= 'bills/' . $id . '/transactions';
+            } else { //COLLECTIONS or CHECKCOLLECTION
+                $this->url .= 'collections/';
+            }
+            return $this;
+        }
+
+        public function curl_action($data = '')
+        {
+            if ($this->action == 'GETCOLLECTIONINDEX' || $this->action == 'GETTRANSACTIONINDEX') {
+                $this->url .= '?page=' . $data['page'] . '&status=' . $data['status'];
+            } elseif ($this->action == 'CHECKCOLLECTION') {
+                $this->url .= $data['id'];
             }
 
-            public function setAction($action)
-            {
-                $this->action = $action;
-                return $this;
+            $wp_remote_data = array(
+                        'headers' => array(
+                        'Authorization' => 'Basic ' . base64_encode($this->api_key . ':')
+                    )
+                );
+
+            /*
+             * Determine request type
+             * Action Available:
+             * DELETE (DELETE)
+             * CHECK (GET)
+             * CREATE (POST)
+             * GETCOLLECTIONINDEX (GET)
+             * CHECKCOLLECTION (POST)
+             * COLLECTIONS (POST)
+             *
+             */
+            if ($this->action == 'DELETE') {
+                $wp_remote_data['method'] = 'DELETE';
+            } elseif ($this->action == 'CHECK' || $this->action == 'GETCOLLECTIONINDEX' || $this->action == 'CHECKCOLLECTION' || $this->action == 'GETTRANSACTIONINDEX' || $this->action == 'GETFPXBANKS') {
+                $wp_remote_data['method'] = 'GET';
+            } else {
+                $wp_remote_data['method'] = 'POST';
             }
 
-            public function setURL($mode, $id = '')
-            {
-                if ($mode == 'Staging') {
-                    $this->url = self::$staging;
-                } elseif ($mode == 'Production') {
-                    $this->url = self::$production;
-                } else {
-                    self::throwException('Invalid API Key Provided');
-                }
-                if ($this->action == 'DELETE' || $this->action == 'CHECK') {
-                    $this->url .= 'bills/' . $id;
-                } elseif ($this->action == 'CREATE') {
-                    $this->url .= 'bills/';
-                } elseif ($this->action == 'GETCOLLECTIONINDEX') {
-                    $this->url .= 'collections';
-                } elseif ($this->action == 'GETTRANSACTIONINDEX') {
-                    $this->url .= 'bills/' . $id . '/transactions';
-                } else { //COLLECTIONS or CHECKCOLLECTION
-                    $this->url .= 'collections/';
-                }
-                return $this;
+            if ($this->action == 'CREATE' || $this->action == 'COLLECTIONS' || $this->action == 'CREATEMP' || $this->action == 'CREATEMPCOLLECTION' || $this->action == 'REGISTERBANK') {
+                $wp_remote_data['body'] = http_build_query($data);
             }
 
-            public function curl_action($data = '')
-            {
-                if ($this->action == 'GETCOLLECTIONINDEX' || $this->action == 'GETTRANSACTIONINDEX') {
-                    $this->url .= '?page=' . $data['page'] . '&status=' . $data['status'];
-                } elseif ($this->action == 'CHECKCOLLECTION') {
-                    $this->url .= $data['id'];
-                }
-
-
-                $process = curl_init();
-                curl_setopt($process, CURLOPT_URL, $this->url);
-                curl_setopt($process, CURLOPT_HEADER, 0);
-                curl_setopt($process, CURLOPT_USERPWD, $this->api_key . ":");
-                if ($this->action == 'DELETE') {
-                    curl_setopt($process, CURLOPT_CUSTOMREQUEST, "DELETE");
-                }
-                curl_setopt($process, CURLOPT_TIMEOUT, 10);
-                curl_setopt($process, CURLOPT_RETURNTRANSFER, true);
-                if ($this->action == 'CREATE' || $this->action == 'COLLECTIONS') {
-                    curl_setopt($process, CURLOPT_POSTFIELDS, http_build_query($data));
-                }
-                $return = curl_exec($process);
-                curl_close($process);
-                $this->curldata = json_decode($return, true);
-                return $this->curldata;
-            }
+            // Send this payload to Billplz for processing
+            $response = wp_remote_post($this->url, $wp_remote_data);
+            return json_decode(wp_remote_retrieve_body($response), true);
         }
     }
+}
