@@ -1,7 +1,7 @@
 === Billplz for Easy Digital Downloads ===
 Contributors: wanzulnet
 Tags: billplz,paymentgateway,fpx,malaysia
-Tested up to: 4.9.3
+Tested up to: 4.9.4
 Stable tag: 3.0.0
 Donate link: https://www.billplz.com/join/8ant7x743awpuaqcxtqufg
 Requires at least: 4.8
