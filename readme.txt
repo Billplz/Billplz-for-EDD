@@ -20,7 +20,7 @@ None
 
 == Screenshots ==
 
-* Will available soon
+* Configuration page for setting up Billplz API Credentials.
 
 == Changelog ==
 
