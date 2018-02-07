@@ -1,7 +1,7 @@
 === Billplz for Easy Digital Downloads ===
 Contributors: wanzulnet
 Tags: billplz,paymentgateway,fpx,malaysia
-Tested up to: 4.9.2
+Tested up to: 4.9.3
 Stable tag: 3.0.0
 Donate link: https://www.billplz.com/join/8ant7x743awpuaqcxtqufg
 Requires at least: 4.8
@@ -9,12 +9,12 @@ License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 5.6
 
-Accept Internet Banking Payment by using Billplz. 
+Accept Internet Banking Payment by using Billplz.
 
 == Description ==
-Install this plugin to accept payment using Billplz (Maybank2u, CIMB Clicks, Bank Islam, FPX). 
+Install this plugin to accept payment using Billplz (Maybank2u, CIMB Clicks, Bank Islam, FPX).
 
-== Upgrade Notice == 
+== Upgrade Notice ==
 
 None
 
@@ -59,7 +59,7 @@ You can the X Signature Key at your Billplz Account Settings. [Get it here](http
 
 = Troubleshooting =
 
-* Please make sure you have enabled X Signature Key on your Billplz Account Settings	
+* Please make sure you have enabled X Signature Key on your Billplz Account Settings
 
 == Links ==
 [Sign Up](http://billplz.com/join/lz7pmrxa45tiihvqdydxqq/) for Billplz account to accept payment using Billplz now!
