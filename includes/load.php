@@ -3,7 +3,12 @@
 // registers the gateway
 function billplz_edd_register_gateway($gateways)
 {
-    $gateways['billplz'] = array('admin_label' => 'Billplz', 'checkout_label' => __('Billplz', 'eddbillplzplugin'));
+    $display_name = edd_get_option('billplz_display_name', false);
+
+    if (!$display_name) {
+        $display_name = __('Billplz', 'eddbillplzplugin');
+    }
+    $gateways['billplz'] = array('admin_label' => 'Billplz', 'checkout_label' => $display_name);
     return $gateways;
 }
 add_filter('edd_payment_gateways', 'billplz_edd_register_gateway');
@@ -105,6 +110,13 @@ function billplz_edd_add_settings($settings)
             'name' => '<strong>' . __('Billplz Payment Gateway Settings', 'eddbillplzplugin') . '</strong>',
             'desc' => __('Configure Billplz Payment Gateway Settings', 'eddbillplzplugin'),
             'type' => 'header'
+        ),
+        array(
+            'id' => 'billplz_display_name',
+            'name' => __('Billplz Display Name', 'eddbillplzplugin'),
+            'desc' => __('Display name on user checkout.', 'eddbillplzplugin'),
+            'type' => 'text',
+            'size' => 'regular'
         ),
         array(
             'id' => 'billplz_api_key',
