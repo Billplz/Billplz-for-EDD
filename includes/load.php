@@ -128,14 +128,14 @@ function billplz_edd_add_settings($settings)
         array(
             'id' => 'billplz_x_signature',
             'name' => __('X Signature Key', 'eddbillplzplugin'),
-            'desc' => __('Get Your API Key at Billplz >> Account Settings', 'eddbillplzplugin'),
+            'desc' => __('Get Your X Signature Key at Billplz >> Account Settings', 'eddbillplzplugin'),
             'type' => 'text',
             'size' => 'regular'
         ),
         array(
             'id' => 'billplz_collection_id',
             'name' => __('Collection ID', 'eddbillplzplugin'),
-            'desc' => __('Get Your API Key at Billplz >> Billing', 'eddbillplzplugin'),
+            'desc' => __('Get Your Collection ID at Billplz >> Billing', 'eddbillplzplugin'),
             'type' => 'text',
             'size' => 'regular'
         ),
