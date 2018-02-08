@@ -2,7 +2,7 @@
     "name": "billplz/billplz-for-edd",
     "description": "A Billplz plugin for integration with Easy Digital Downloads",
     "type": "wordpress-plugin",
-    "license": "GPL-3.0-or-later"
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Wan",
