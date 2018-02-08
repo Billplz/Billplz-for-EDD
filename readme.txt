@@ -2,7 +2,7 @@
 Contributors: wanzulnet
 Tags: billplz,paymentgateway,fpx,malaysia
 Tested up to: 4.9.4
-Stable tag: 3.0.1
+Stable tag: 3.0.2
 Donate link: https://www.billplz.com/join/8ant7x743awpuaqcxtqufg
 Requires at least: 4.8
 License: GPLv3 or later
@@ -23,6 +23,10 @@ None
 * Configuration page for setting up Billplz API Credentials.
 
 == Changelog ==
+
+= 3.0.2 =
+
+* IMPROVED: Corrected label for X Signature Key and Collection ID
 
 = 3.0.1 =
 
