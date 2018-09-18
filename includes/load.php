@@ -1,5 +1,8 @@
 <?php
 
+use Billplz\EDD\API;
+use Billplz\EDD\WPConnect;
+
 // registers the gateway
 function billplz_edd_register_gateway($gateways)
 {
@@ -35,46 +38,48 @@ function billplz_process_payment($purchase_data)
     **********************************/
 
     $payment = array(
-            'price' => $purchase_data['price'],
-            'date' => $purchase_data['date'],
-            'user_email' => $purchase_data['user_email'],
-            'purchase_key' => $purchase_data['purchase_key'],
-            'currency' => $edd_options['currency'],
-            'downloads' => $purchase_data['downloads'],
-            'cart_details' => $purchase_data['cart_details'],
-            'user_info' => $purchase_data['user_info'],
-            'status' => 'pending'
+        'price' => $purchase_data['price'],
+        'date' => $purchase_data['date'],
+        'user_email' => $purchase_data['user_email'],
+        'purchase_key' => $purchase_data['purchase_key'],
+        'currency' => $edd_options['currency'],
+        'downloads' => $purchase_data['downloads'],
+        'cart_details' => $purchase_data['cart_details'],
+        'user_info' => $purchase_data['user_info'],
+        'status' => 'pending'
     );
 
-    $api_key = edd_get_option('billplz_api_key', false);
-    $collection_id = edd_get_option('billplz_collection_id', false);
-    $deliver = edd_get_option('billplz_notification', false);
+    $parameter = array(
+        'collection_id' => edd_get_option('billplz_collection_id', false),
+        'email'=> $payment['user_email'],
+        'mobile'=>'',
+        'name'=> $payment['user_info']['first_name'] . ' ' . $payment['user_info']['last_name'],
+        'amount'=> strval($payment['price'] * 100),
+        'callback_url'=> billplz_edd_listener_url(),
+        'description'=> mb_substr($purchase_summary, 0, 200)
+    );
 
     // record the pending payment
     $payment_id = edd_insert_payment($payment);
 
-    $billplz = new Billplz($api_key);
-    $billplz
-        ->setCollection($collection_id)
-        ->setAmount($payment['price'])
-        ->setName($payment['user_info']['first_name'] . ' ' . $payment['user_info']['last_name'])
-        ->setDeliver($deliver)
-        ->setEmail($payment['user_email'])
-        ->setMobile('')
-        ->setDescription($purchase_summary)
-        ->setReference_1_Label('ID')
-        ->setPassbackURL(billplz_edd_listener_url(), billplz_edd_listener_url())
-        ->setReference_1($payment_id)
-        ->create_bill(true);
+    $optional = array(
+        'redirect_url' => billplz_edd_listener_url(),
+        'reference_2_label' => 'ID',
+        'reference_2' => $payment_id
+    );
 
-    $url = $billplz->getURL();
+    $api_key = edd_get_option('billplz_api_key', false);
 
-    if (empty($url)) {
-        wp_die(__('Something went wrong! ' . $billplz->getErrorMessage(), 'eddbillplzplugin'));
+    $connnect = (new WPConnect($api_key))->detectMode();
+    $billplz = new API($connnect);
+    list($rheader, $rbody) = $billplz->toArray($billplz->createBill($parameter, $optional));
+
+    if ($rheader !== 200) {
+        wp_die(__('Something went wrong! ' . print_r($rbody, true), 'eddbillplzplugin'));
     }
 
-    if (! add_post_meta($payment_id, 'billplz_id', $billplz->getID(), true)) {
-        update_post_meta($payment_id, 'billplz_id', $billplz->getID());
+    if (! add_post_meta($payment_id, 'billplz_id', $rbody['id'], true)) {
+        update_post_meta($payment_id, 'billplz_id', $rbody['id']);
     }
 
     if (! add_post_meta($payment_id, 'billplz_api_key', $api_key, true)) {
@@ -86,7 +91,7 @@ function billplz_process_payment($purchase_data)
     }
 
     // Redirect to Billplz
-    wp_redirect($url);
+    wp_redirect($rbody['url']);
     exit;
 }
 add_action('edd_gateway_billplz', 'billplz_process_payment');
@@ -126,13 +131,6 @@ function billplz_edd_add_settings($settings)
             'size' => 'regular'
         ),
         array(
-            'id' => 'billplz_x_signature',
-            'name' => __('X Signature Key', 'eddbillplzplugin'),
-            'desc' => __('Get Your X Signature Key at Billplz >> Account Settings', 'eddbillplzplugin'),
-            'type' => 'text',
-            'size' => 'regular'
-        ),
-        array(
             'id' => 'billplz_collection_id',
             'name' => __('Collection ID', 'eddbillplzplugin'),
             'desc' => __('Get Your Collection ID at Billplz >> Billing', 'eddbillplzplugin'),
@@ -140,19 +138,12 @@ function billplz_edd_add_settings($settings)
             'size' => 'regular'
         ),
         array(
-            'id' => 'billplz_notification',
-            'name' => __('Send Copy to', 'eddbillplzplugin'),
-            'desc' => __('Send Bill to Customer', 'eddbillplzplugin'),
-            'type' => 'select',
-            'options' => array(
-                '0' => __('No Notification', 'eddbillplzplugin'),
-                '1' => __('Email Only (FREE)', 'eddbillplzplugin'),
-                '2' => __('SMS Only (RM0.15)', 'eddbillplzplugin'),
-                '3' => __('Both (RM0.15)', 'eddbillplzplugin')
-            ),
-            'chosen' => true,
-            'placeholder' => __('Recommended: No Notification', 'eddbillplzplugin')
-        )
+            'id' => 'billplz_x_signature',
+            'name' => __('X Signature Key', 'eddbillplzplugin'),
+            'desc' => __('Get Your X Signature Key at Billplz >> Account Settings', 'eddbillplzplugin'),
+            'type' => 'text',
+            'size' => 'regular'
+        ),
     );
 
     return array_merge($settings, $billplz_gateway_settings);
@@ -176,11 +167,9 @@ function edd_listen_for_billplz_ipn()
     $x_signature = edd_get_option('billplz_x_signature', false);
 
     try {
-        if (isset($_GET['billplz']['id'])) {
-            $data = Billplz::getRedirectData($x_signature);
-        } else {
-            edd_debug_log('Billplz IPN endpoint loaded');
-            $data = Billplz::getCallbackData($x_signature);
+        $data = WPConnect::getXSignature($x_signature);
+        if ($data['type'] === 'callback') {
+            edd_debug_log('Billplz IPN endpoint loaded & verified successfully');
         }
     } catch (\Exception $e) {
         edd_record_gateway_error(__('IPN Error', 'easy-digital-downloads'), sprintf(__('Invalid IPN verification response. IPN data: %s', 'easy-digital-downloads'), $e->getMessage()));
@@ -188,13 +177,13 @@ function edd_listen_for_billplz_ipn()
         exit($e->getMessage());
     }
 
-    edd_debug_log('IPN verified successfully');
-    $billplz = new Billplz($api_key);
-    $moreData = $billplz->check_bill($data['id']);
+    $connnect = (new WPConnect($api_key))->detectMode();
+    $billplz = new API($connnect);
+    list($rheader, $rbody) = $billplz->toArray($billplz->getBill($data['id']));
 
-    $payment_id = absint($moreData['reference_1']);
+    
+    $payment_id = absint($rbody['reference_2']);
     $payment = new EDD_Payment($payment_id);
-
     if ($payment->gateway != 'billplz') {
         return; // this isn't a Billplz IPN
     }
@@ -207,17 +196,17 @@ function edd_listen_for_billplz_ipn()
         return;
     }
 
-    if ($moreData['paid']) {
+    if ($rbody['paid']) {
         if (get_post_status($payment_id) == 'publish') {
             // Do nothing
         } else {
             // Retrieve the total purchase amount (before Billplz)
             $payment_amount = edd_get_payment_amount($payment_id);
 
-            if (number_format((float) ($moreData['amount']/100), 2) < number_format((float) $payment_amount, 2)) {
+            if (number_format((float) ($rbody['amount']/100), 2) < number_format((float) $payment_amount, 2)) {
                 // The prices don't match
-                edd_record_gateway_error(__('IPN Error', 'easy-digital-downloads'), sprintf(__('Invalid payment amount in IPN response. IPN data: %s', 'easy-digital-downloads'), json_encode($moreData)), $payment_id);
-                edd_debug_log('Invalid payment amount in IPN response. IPN data: ' . printf($moreData, true));
+                edd_record_gateway_error(__('IPN Error', 'easy-digital-downloads'), sprintf(__('Invalid payment amount in IPN response. IPN data: %s', 'easy-digital-downloads'), json_encode($rbody)), $payment_id);
+                edd_debug_log('Invalid payment amount in IPN response. IPN data: ' . printf($data, true));
                 edd_update_payment_status($payment_id, 'failed');
                 edd_insert_payment_note($payment_id, __('Payment failed due to invalid amount in Billplz IPN.', 'easy-digital-downloads'));
                 return;
@@ -230,9 +219,9 @@ function edd_listen_for_billplz_ipn()
         }
     }
 
-    if (isset($_GET['billplz']['id']) && $moreData['paid']) {
+    if ($data['type'] === 'redirect' && $rbody['paid']) {
         edd_send_to_success_page();
-    } elseif (isset($_GET['billplz']['id']) && !$moreData['paid']) {
+    } elseif ($data['type'] === 'redirect' && !$rbody['paid']) {
         //edd_send_back_to_checkout('?payment-mode=' . $purchase_data['post_data']['edd-gateway']);
         header('Location: '.edd_get_failed_transaction_uri('?payment-id=' . $payment_id));
     }
@@ -250,9 +239,13 @@ function edd_billplz_delete_bill($post_id)
         return;
     }
 
+    /* Allow hack to disable bill deletion */
+    if (defined('BEDD_DISABLE_DELETE') && BEDD_DISABLE_DELETE) {
+        return;
+    }
     $bill_id = get_post_meta($post_id, 'billplz_id', true);
-    $api_key  =get_post_meta($post_id, 'billplz_api_key', true);
-    $status  =get_post_meta($post_id, 'billplz_paid', true);
+    $api_key = get_post_meta($post_id, 'billplz_api_key', true);
+    $status  = get_post_meta($post_id, 'billplz_paid', true);
 
     if (empty($bill_id) || empty($api_key) || empty($status)) {
         return;
@@ -265,9 +258,15 @@ function edd_billplz_delete_bill($post_id)
         return;
     }
 
-    $billplz = new Billplz($api_key);
-    if (!$billplz->deleteBill($bill_id)) {
-        wp_die(__('Bill cannot be deleted since the payment is ongoing. Deleting this posts has been prevented.', 'eddbillplzplugin'));
+    $connnect = (new WPConnect($api_key))->detectMode();
+    $billplz = new API($connnect);
+    list($rheader, $rbody) = $billplz->toArray($billplz->deleteBill($bill_id));
+
+    if ($rheader !== 200) {
+        list($rheader, $rbody) = $billplz->toArray($billplz->getBill($bill_id));
+        if (!$rbody['paid']) {
+            wp_die(__('Bill cannot be deleted. Message: ' . print_r($rbody, true), 'eddbillplzplugin'));
+        }
     }
 }
 

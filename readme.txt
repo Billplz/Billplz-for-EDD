@@ -1,8 +1,8 @@
 === Billplz for Easy Digital Downloads ===
 Contributors: wanzulnet
-Tags: billplz,paymentgateway,fpx,malaysia
-Tested up to: 4.9.4
-Stable tag: 3.0.2
+Tags: billplz,paymentgateway,fpx,boost
+Tested up to: 4.9.8
+Stable tag: 3.0.3
 Donate link: https://www.billplz.com/join/8ant7x743awpuaqcxtqufg
 Requires at least: 4.8
 License: GPLv3 or later
@@ -12,7 +12,7 @@ Requires PHP: 5.6
 Accept Internet Banking Payment by using Billplz.
 
 == Description ==
-Install this plugin to accept payment using Billplz (Maybank2u, CIMB Clicks, Bank Islam, FPX).
+Install this plugin to accept payment using Billplz (FPX & Boost).
 
 == Upgrade Notice ==
 
@@ -23,6 +23,11 @@ None
 * Configuration page for setting up Billplz API Credentials.
 
 == Changelog ==
+
+= 3.0.3 =
+* IMPROVED: Reduced query request to Billplz API
+* FIX: Some hosting have issues connecting to Billplz API
+* REMOVED: Option for Bill delivery notification upon creation
 
 = 3.0.2 =
 

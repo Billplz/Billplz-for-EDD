@@ -8,7 +8,7 @@ Accept Payment using Billplz by using this plugin
 
 ## System Requirements
 * PHP Version **5.6** or later
-* Build with **Easy Digital Downloads** version **2.8.17**
+* Build with **Easy Digital Downloads** version **2.9.7**
 
 ## Installation
 
@@ -26,7 +26,7 @@ Normal WordPress Installation:
 ## Configuration
 
 1. **Downloads** >> **Settings** >> **Payment Gateways**
-2. **Tick Billplz** and Set **API Key**, **X Signature Key** & Collection ID
+2. **Tick Billplz** and Set **API Key**, **Collection ID** & **X Signature Key** 
 3. Save Changes
 
 Note: Make sure your Currency is set to **Malaysian Ringgits** otherwise it will not work.
@@ -37,4 +37,4 @@ Note: Make sure your Currency is set to **Malaysian Ringgits** otherwise it will
 
 ## Other
 
-Please open an issue or email to wan@billplz.com
+Facebook: [Billplz Dev Jam](https://www.facebook.com/groups/billplzdevjam/)
