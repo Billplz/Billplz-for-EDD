@@ -7,7 +7,7 @@
 Accept Payment using Billplz by using this plugin
 
 ## System Requirements
-* PHP Version **5.6** or later
+* PHP Version **5.5** or later
 * Build with **Easy Digital Downloads** version **2.9.7**
 
 ## Installation
