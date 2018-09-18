@@ -2,12 +2,12 @@
 Contributors: wanzulnet
 Tags: billplz,paymentgateway,fpx,boost
 Tested up to: 4.9.8
-Stable tag: 3.0.3
+Stable tag: 3.0.4
 Donate link: https://www.billplz.com/join/8ant7x743awpuaqcxtqufg
 Requires at least: 4.8
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Requires PHP: 5.6
+Requires PHP: 5.5
 
 Accept Internet Banking Payment by using Billplz.
 
@@ -24,6 +24,9 @@ None
 
 == Changelog ==
 
+= 3.0.4 =
+* NEW: Added settings link on the plugin page to setting page
+
 = 3.0.3 =
 * IMPROVED: Reduced query request to Billplz API
 * FIX: Some hosting have issues connecting to Billplz API
@@ -32,15 +35,6 @@ None
 = 3.0.2 =
 
 * IMPROVED: Corrected label for X Signature Key and Collection ID
-
-= 3.0.1 =
-
-* NEW: Added Billplz Display Name option
-* FIX: Corrected plugin name from EDD to Easy Digital Downloads for consistency
-
-= 3.0.0 =
-
-* NEW: Initial Release
 
 == Installation ==
 
