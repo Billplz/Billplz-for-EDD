@@ -1,18 +1,18 @@
 === Billplz for Easy Digital Downloads ===
 Contributors: wanzulnet
-Tags: billplz,paymentgateway,fpx,boost
-Tested up to: 4.9.8
-Stable tag: 3.0.4
+Tags: billplz
+Tested up to: 5.2
+Stable tag: 3.0.5
 Donate link: https://www.billplz.com/join/8ant7x743awpuaqcxtqufg
 Requires at least: 4.8
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 5.5
 
-Accept Internet Banking Payment by using Billplz.
+Accept payment by using Billplz.
 
 == Description ==
-Install this plugin to accept payment using Billplz (FPX & Boost).
+Install this plugin to accept payment using Billplz.
 
 == Upgrade Notice ==
 
@@ -23,6 +23,9 @@ None
 * Configuration page for setting up Billplz API Credentials.
 
 == Changelog ==
+
+= 3.0.5 =
+* FIXED: Order status callback not functioning when customer name has single quote.
 
 = 3.0.4 =
 * NEW: Added settings link on the plugin page to setting page

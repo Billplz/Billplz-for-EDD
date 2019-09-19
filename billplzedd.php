@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name: Billplz for Easy Digital Downloads
- * Plugin URI: http://github.com/billplz/Billplz-for-EDD
- * Description: Billplz Payment Gateway | Accept Payment using all participating FPX Banking Channels. <a href="https://www.billplz.com/join/8ant7x743awpuaqcxtqufg" target="_blank">Sign up Now</a>.
- * Author: Wan @ Billplz
- * Author URI: http://www.github.com/billplz
- * Version: 3.0.4
+ * Plugin URI: https://wordpress.org/plugins/billplz-for-edd/
+ * Description: Billplz. Fair payment platform. | <a href="https://www.billplz.com/enterprise/signup" target="_blank">Sign up Now</a>.
+ * Author: Billplz Sdn. Bhd.
+ * Author URI: http://github.com/billplz/billplz-for-edd
+ * Version: 3.0.5
  * License: GPL-3.0-or-later
  * Requires PHP: 5.6
  */
@@ -20,7 +20,8 @@
 require 'includes/API.php';
 require 'includes/WPConnect.php';
 
-if (!function_exists('gourl_edd_gateway_load') && !function_exists('gourl_edd_action_links')) { // Exit if duplicate
+if (!function_exists('gourl_edd_gateway_load') && !function_exists('gourl_edd_action_links')) {
+    // Exit if duplicate
     require 'includes/load.php';
 }
 
@@ -31,5 +32,5 @@ function bedd_plugin_settings_link($links)
     return $links;
 }
 
-$plugin_action_link = 'plugin_action_links_'.plugin_basename(__FILE__);
+$plugin_action_link = 'plugin_action_links_' . plugin_basename(__FILE__);
 add_filter($plugin_action_link, 'bedd_plugin_settings_link');
